@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from starlette import status
 from starlette.responses import JSONResponse
 
-from blog.models import User
-from blog.serializers.user import UserInSerializer, UserSerializer
+from backend.models import User
+from backend.serializers.user import UserInSerializer, UserSerializer
 
 router = APIRouter()
 

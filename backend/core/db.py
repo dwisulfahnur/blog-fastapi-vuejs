@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from blog.core import config
+from backend.core import config
 
 class DataBase:
     client: AsyncIOMotorClient = None

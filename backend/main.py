@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from blog.api import router
+from backend.api import router
 from .core import config
 from .core.db import database
 
@@ -17,7 +17,7 @@ async def event_startup():
     logging.info("Connected to database!")
 
     logging.info("ensuring model indexes")
-    from blog.models import ensure_indexes
+    from backend.models import ensure_indexes
     await ensure_indexes()
 
 

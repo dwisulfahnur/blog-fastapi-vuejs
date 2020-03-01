@@ -4,9 +4,9 @@ from bson.objectid import ObjectId
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
-from blog.models import Post, User, Comment
-from blog.serializers.comment import CommentInSerializer
-from blog.serializers.post import PostInSerializer, PostSerializer
+from backend.models import Post, User, Comment
+from backend.serializers.comment import CommentInSerializer
+from backend.serializers.post import PostInSerializer, PostSerializer
 
 router = APIRouter()
 

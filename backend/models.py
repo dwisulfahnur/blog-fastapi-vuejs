@@ -2,7 +2,7 @@ from datetime import datetime
 
 from umongo import Document, fields, Instance, EmbeddedDocument
 
-from blog.core.db import get_database
+from backend.core.db import get_database
 
 db = get_database()
 instance = Instance(db)
