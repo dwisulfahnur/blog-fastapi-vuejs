@@ -8,9 +8,6 @@
         <li class="nav-item">
           <router-link :to="{name: 'user-list'}" class="nav-link">User List</router-link>
         </li>
-        <li class="nav-item">
-          <router-link :to="{name: 'user-edit'}" class="nav-link">Edit User</router-link>
-        </li>
       </ul>
     </nav>
 
