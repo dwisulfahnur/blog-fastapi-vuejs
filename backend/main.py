@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from backend.api import router
@@ -8,6 +9,19 @@ from .core import config
 from .core.db import database
 
 app = FastAPI(title="Blog API")
+
+origins= [
+    'http://localhost:8000',
+    'http://localhost:8080'
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.on_event("startup")
