@@ -1,9 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from starlette import status
 from starlette.responses import JSONResponse
 
+from bson.objectid import ObjectId
 from backend.models import User
 from backend.serializers.user import UserInSerializer, UserSerializer
 
@@ -27,3 +28,10 @@ async def create_user_api(user: UserInSerializer):
         return JSONResponse(e.messages, status.HTTP_400_BAD_REQUEST)
     if created:
         return user.dump()
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["User"])
+async def delete_user_api(user_id: str):
+    user = await User.find_one({'_id': ObjectId(user_id)}, {'_id':1})
+    if not user:
+        raise HTTPException(detail="User Not Found", status_code=status.HTTP_404_NOT_FOUND)
+    await user.remove()
