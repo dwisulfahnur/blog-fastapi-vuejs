@@ -42,6 +42,16 @@ async def get_post_detail_api(post_id: str, post: PostInSerializer):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post Not Found")
 
 
+@router.delete("/{post_id}")
+async def delete_post_api(post_id:str):
+    post = await Post.find_one({"_id": ObjectId(post_id)}, {'_id':1})
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post Not Found")
+
+    await post.remove()
+    return
+
+
 @router.post("/{post_id}/add-comment", response_model=PostSerializer,
              status_code=status.HTTP_201_CREATED, tags=["Post"])
 async def add_post_comment_api(post_id: str, comment: CommentInSerializer):
