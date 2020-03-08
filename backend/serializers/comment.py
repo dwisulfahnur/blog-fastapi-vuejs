@@ -4,13 +4,13 @@ from pydantic import BaseModel
 
 
 class CommentSerializer(BaseModel):
-    author: str
+    id: str
     content: str
 
+    created_by: str
     created_at: datetime
     updated_at: datetime
 
 
 class CommentInSerializer(BaseModel):
-    author_id: str
     content: str
