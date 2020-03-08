@@ -42,4 +42,4 @@ async def event_shutdown():
     logging.info("connection to mongodb has been closed!")
 
 
-app.include_router(router, prefix="/api")
+app.include_router(router, prefix=config.BASE_PATH_API)
