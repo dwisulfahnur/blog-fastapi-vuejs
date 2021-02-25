@@ -1,5 +1,10 @@
 # Blog API with FastAPI
 
+
+Simple project that I write using fastapi, motor, and umongo for the backend. VueJS on the frontend
+
+----------------------------
+
 Run the app using the following command:
 ```
 docker-compose up
