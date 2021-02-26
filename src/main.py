@@ -4,15 +4,17 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from backend.api import router
-from .core import config
-from .core.db import database
+from src.api import router
+from src.core import config
+from src.core.db import database
 
 app = FastAPI(title="Blog API")
 
 origins= [
     'http://localhost:8000',
-    'http://localhost:8080'
+    'http://localhost:8080',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:8080'
 ]
 
 app.add_middleware(
@@ -26,12 +28,13 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def event_startup():
+    from src.core.db import database
     logging.info("connect to database....")
     database.client = AsyncIOMotorClient(str(config.MONGODB_URI))
     logging.info("Connected to database!")
 
     logging.info("ensuring model indexes")
-    from backend.models import ensure_indexes
+    from src.models import ensure_indexes
     await ensure_indexes()
 
 

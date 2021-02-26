@@ -6,11 +6,11 @@ config = Config(".env")
 
 BASE_PATH_API = config('BASE_PATH_API')
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', default='secretkey')
 ALGORITHM = "HS256"
 PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=CommaSeparatedStrings)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=CommaSeparatedStrings, default=['*'])
 
 DEBUG = config('DEBUG', cast=bool, default=False)
 

@@ -1,10 +1,12 @@
 from datetime import datetime
+from typing import Optional
 
+from bson.objectid import ObjectId
 from umongo import Document, fields, EmbeddedDocument
 
-from backend.core.db import instance, db
-from backend.models.user import User
-from bson.objectid import ObjectId
+from src.core.db import instance, db
+from src.models.user import User
+
 
 @instance.register
 class Comment(EmbeddedDocument):
@@ -12,8 +14,8 @@ class Comment(EmbeddedDocument):
     content = fields.StrField()
 
     created_by = fields.ReferenceField("User")
-    created_at = fields.DateTimeField(default=datetime.now())
-    updated_at = fields.DateTimeField(default=datetime.now())
+    created_at = fields.DateTimeField(default=datetime.now)
+    updated_at = fields.DateTimeField(default=datetime.now)
 
 
 @instance.register
@@ -23,14 +25,14 @@ class Post(Document):
     comments = fields.ListField(fields.EmbeddedField(Comment))
 
     created_by = fields.ReferenceField(User)
-    created_at = fields.DateTimeField(default=datetime.now())
-    updated_at = fields.DateTimeField(default=datetime.now())
+    created_at = fields.DateTimeField(default=datetime.now)
+    updated_at = fields.DateTimeField(default=datetime.now)
 
     class Meta:
         collection = db.post
 
     @classmethod
-    async def get(cls, id:str):
+    async def get(cls, id: str) -> Optional['Post']:
         if not ObjectId.is_valid(id):
             return None
 

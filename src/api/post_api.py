@@ -1,23 +1,38 @@
+from datetime import datetime
 from typing import List
 
 from bson.objectid import ObjectId
 from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
-from backend.api.auth_api import get_current_user
-from backend.models.post import Post, Comment
-from backend.models.user import User
-from backend.serializers.comment import CommentInSerializer
-from backend.serializers.post import PostInSerializer, PostSerializer
+from src.api.auth_api import get_current_user
+from src.models.post import Post, Comment
+from src.models.user import User
+from src.serializers.comment import CommentInSerializer
+from src.serializers.post import PostInSerializer, PostSerializer, PostInPatchSerializer
 
 router = APIRouter()
 
 
+def pagination(skip: int = 0, limit: int = 10):
+    return {
+        'skip': skip,
+        'limit': limit
+    }
+
+
 @router.get("", response_model=List[PostSerializer],
             status_code=status.HTTP_200_OK)
-async def get_posts_api():
-    cursor = Post.find()
-    posts = [post.dump() for post in await cursor.to_list(length=10)]
+async def get_posts_api(pagination=Depends(pagination)):
+    cursor = Post.find().skip(pagination['skip']).limit(pagination['limit'])
+    posts = [post.dump() for post in await cursor.to_list(length=pagination['limit'])]
+    return posts
+
+
+@router.get("/me", response_model=List[PostSerializer])
+async def get_my_posts_api(pagination=Depends(pagination), current_user=Depends(get_current_user)):
+    cursor = Post.find({'created_by': current_user.id}).skip(pagination['skip']).limit(pagination['limit'])
+    posts = [post.dump() for post in await cursor.to_list(length=pagination['limit'])]
     return posts
 
 
@@ -51,6 +66,25 @@ async def delete_post_api(post_id: str, current_user=Depends(get_current_user)):
 
     await post.remove()
     return
+
+
+@router.patch("/{post_id}", response_model=PostSerializer, status_code=status.HTTP_200_OK)
+async def update_post_api(post_id: str, post_in: PostInPatchSerializer, current_user=Depends(get_current_user)):
+    post = await Post.get(post_id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post Not Found")
+
+    if post.created_by != current_user:
+        raise HTTPException(status_code=401, detail='Not Enough Permissions')
+
+    if post_in.title:
+        post.title = post_in.title
+    if post_in.content:
+        post.content = post_in.content
+
+    post.updated_at = datetime.now()
+    await post.commit()
+    return post.dump()
 
 
 @router.post("/{post_id}/add-comment", response_model=PostSerializer,

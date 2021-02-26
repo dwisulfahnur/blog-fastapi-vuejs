@@ -6,9 +6,9 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
-from backend.core.config import ACCESS_TOKEN_EXPIRES, SECRET_KEY, ALGORITHM
-from backend.models.user import User
-from backend.serializers.token import Token, TokenData
+from src.core.config import ACCESS_TOKEN_EXPIRES, SECRET_KEY, ALGORITHM
+from src.models.user import User
+from src.serializers.token import Token, TokenData
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/oauth/token')
 router = APIRouter()
@@ -36,7 +36,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 
 @router.post('/token', response_model=Token)
 async def get_token_api(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await User.get_by_username(form_data.username)
+    user = await User.get_by_email(form_data.username)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 

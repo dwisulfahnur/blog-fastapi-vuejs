@@ -8,7 +8,6 @@ class UserSerializer(BaseModel):
     id: str
     full_name: Optional[str]
     email: EmailStr
-    username: str
 
     created_at: datetime
     updated_at: datetime
@@ -20,7 +19,6 @@ class UserSerializer(BaseModel):
 class UserInSerializer(BaseModel):
     full_name: Optional[str]
     email: EmailStr
-    username: str
     password: str
 
     @validator('password')

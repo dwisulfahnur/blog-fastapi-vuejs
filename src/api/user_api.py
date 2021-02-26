@@ -6,8 +6,8 @@ from marshmallow.exceptions import ValidationError
 from starlette import status
 from starlette.responses import JSONResponse
 
-from backend.models.user import User
-from backend.serializers.user import UserInSerializer, UserSerializer
+from src.models.user import User
+from src.serializers.user import UserInSerializer, UserSerializer
 from .auth_api import get_current_user
 
 router = APIRouter()
@@ -26,7 +26,6 @@ async def create_user_api(user_in: UserInSerializer):
     try:
         user = await User.register_new_user(email=user_in.email,
                                             full_name=user_in.full_name,
-                                            username=user_in.username,
                                             password=user_in.password)
         return user.dump()
     except ValidationError as e:

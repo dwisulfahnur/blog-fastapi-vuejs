@@ -1,27 +1,26 @@
-from backend.core.config import BASE_PATH_API
+from src.core.config import BASE_PATH_API
 
 
 def test_user_register_api(test_client, test_user_data, test_user_object_data, monkeypatch):
-    from backend.models.user import User
+    from src.models.user import User
     class UserInDBMock(User):
         @classmethod
-        async def register_new_user(cls, full_name: str, username: str,
+        async def register_new_user(cls, full_name: str,
                                     email: str, password: str):
             return test_user_object_data
 
-    monkeypatch.setattr('backend.models.user.User.register_new_user',
+    monkeypatch.setattr('src.models.user.User.register_new_user',
                         UserInDBMock.register_new_user)
 
     response = test_client.post(f'{BASE_PATH_API}/users', json={
         'full_name': test_user_data['full_name'],
         'email': test_user_data['email'],
-        'username': test_user_data['username'],
         'password': test_user_data['password'],
     })
 
     assert response.status_code == 201
     assert response.json()['id']
-    assert response.json()['username'] == test_user_data['username']
+    assert response.json()['email'] == test_user_data['email']
 
 
 def test_read_user_me(test_client, test_user_object_data, access_token):
@@ -31,6 +30,5 @@ def test_read_user_me(test_client, test_user_object_data, access_token):
 
     assert response.status_code == 200
     assert response.json()['id'] == str(test_user_object_data.id)
-    assert response.json()['username'] == test_user_object_data.username
     assert response.json()['full_name'] == test_user_object_data.full_name
     assert response.json()['email'] == test_user_object_data.email

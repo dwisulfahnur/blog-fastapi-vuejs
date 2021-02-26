@@ -1,7 +1,7 @@
 
 import pytest
 
-from backend.core.config import BASE_PATH_API
+from src.core.config import BASE_PATH_API
 
 
 @pytest.fixture(scope='module')
