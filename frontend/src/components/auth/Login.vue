@@ -19,7 +19,11 @@
                             <input class="form-control" type="password" v-model="password"/>
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-primary w-100" type="submit" value="Login"/>
+                            <button class="btn btn-primary w-100" disabled type="button" v-if="loading">
+                                <span aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></span>
+                                Login
+                            </button>
+                            <button class="btn btn-primary w-100" type="submit" v-else>Login</button>
                         </div>
                     </form>
                 </div>
@@ -35,30 +39,33 @@
                 email: '',
                 password: '',
                 invalidLogin: false,
+                loading: false,
             }
         },
         methods: {
             login() {
+                this.loading = true
                 let data = new FormData()
                 data.append('grant_type', 'password')
                 data.append('username', this.email)
                 data.append('password', this.password)
                 let uri = '/oauth/token'
                 this.axios.post(uri, data).then((response) => {
-                    console.log(response)
                     localStorage.setItem('actoken', response.data.access_token)
                     localStorage.setItem('loggedIn', true)
+
                     this.axios.get('/users/me', {
                             headers: {Authorization: `Bearer ${response.data.access_token}`}
                         }
                     ).then(response => {
                         localStorage.setItem('email', response.data.email)
                         this.$router.replace({name: 'my-posts'})
+                        this.loading = false
                         window.location.reload()
                     })
                 }).catch(() => {
-                    console.log("INVALID LOGIN")
                     this.invalidLogin = true
+                    this.loading = false
                 })
             }
         }

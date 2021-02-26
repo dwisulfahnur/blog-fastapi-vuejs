@@ -26,7 +26,11 @@
                             <div class="invalid-feedback" v-if="errors.password">{{errors.password}}</div>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <button class="btn btn-primary w-100" disabled type="button" v-if="loading">
+                                <span aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></span>
+                                Register
+                            </button>
+                            <button class="btn btn-primary w-100" type="submit" v-else>Register</button>
                         </div>
                     </form>
                 </div>
@@ -38,6 +42,7 @@
     export default {
         data() {
             return {
+                loading: false,
                 user: {
                     full_name: '',
                     email: '',
@@ -53,8 +58,10 @@
         },
         methods: {
             createUser() {
+                this.loading = true
                 this.axios.post('/users', this.user)
                     .then(() => {
+                        this.loading = false
                         this.$router.replace({name: 'login'})
                     })
                     .catch(err => {
@@ -68,6 +75,7 @@
                         }
 
                         this.user.password = ''
+                        this.loading = false
                     })
             }
         }
