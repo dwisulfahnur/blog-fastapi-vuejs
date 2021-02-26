@@ -11,6 +11,8 @@ import Login from './components/auth/Login'
 import 'bootstrap/dist/css/bootstrap.css'
 import MyPosts from "./components/posts/MyPosts";
 import PublicPosts from "./components/posts/PublicPosts";
+import NewPost from "./components/posts/NewPost";
+import EditPost from "./components/posts/EditPost";
 // import ListUser from './components/users/ListUser'
 
 
@@ -52,9 +54,19 @@ const routes = [
         component: EditUser
     },
     {
+        name: 'new-post',
+        path: '/post/new',
+        component: NewPost
+    },
+    {
         name: 'my-posts',
         path: '/post/me',
         component: MyPosts,
+    },
+    {
+        name: 'edit-post',
+        path: '/post/:id',
+        component: EditPost
     }
 ]
 
