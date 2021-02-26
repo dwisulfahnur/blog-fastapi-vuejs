@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  backend:
+    build: .
+    command: uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+    environment:
+      BASE_PATH_API: /api
+      SECRET_KEY: secretkey
+      ALLOWED_HOSTS: 127.0.0.1,localhost
+      MONGODB_NAME: blog-fastapi
+      MONGODB_URI: mongodb://mongodbuser:mongodbpassword@mongodb:27017
+    volumes:
+      - ./src/:/home/app/backend/src
+    env_file:
+      - ./.env
+    depends_on:
+      - mongodb
+    ports:
+      - "8000:8000"
+  frontend:
+    build: ./frontend
+    command: npm run serve
+    volumes:
+      - ./frontend:/home/app/frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+  mongodb:
+    image: mongo:4.0.8
+    restart: unless-stopped
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongodbuser
+      MONGO_INITDB_ROOT_PASSWORD: mongodbpassword
+      MONGO_INITDB_DATABASE: blog-fastapi
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
+    volumes:
+      - mongodbdata:/data/db
+
+
+volumes:
+  mongodbdata:
