@@ -6,6 +6,9 @@
                     <h4 class="card-title">
                         {{post.title}}
                     </h4>
+                    <span class="help text-muted" v-if="post.author_name">Author: {{ post.author_name }}</span>
+                    <span class="help text-muted" v-else>Author: Unknown</span>
+                    <hr/>
                     <p>{{post.content}}</p>
                 </div>
             </div>
