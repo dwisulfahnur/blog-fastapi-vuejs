@@ -24,14 +24,22 @@ def pagination(skip: int = 0, limit: int = 10):
 @router.get("", response_model=List[PostSerializer],
             status_code=status.HTTP_200_OK)
 async def get_posts_api(pagination=Depends(pagination)):
-    cursor = Post.find().skip(pagination['skip']).limit(pagination['limit'])
+    cursor = Post.find() \
+        .sort('created_at', -1) \
+        .skip(pagination['skip']) \
+        .limit(pagination['limit'])
+
     posts = [post.dump() for post in await cursor.to_list(length=pagination['limit'])]
     return posts
 
 
 @router.get("/me", response_model=List[PostSerializer])
 async def get_my_posts_api(pagination=Depends(pagination), current_user=Depends(get_current_user)):
-    cursor = Post.find({'created_by': current_user.id}).skip(pagination['skip']).limit(pagination['limit'])
+    cursor = Post.find({'created_by': current_user.id}) \
+        .sort('created_at', -1) \
+        .skip(pagination['skip']) \
+        .limit(pagination['limit'])
+
     posts = [post.dump() for post in await cursor.to_list(length=pagination['limit'])]
     return posts
 
