@@ -8,13 +8,21 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <a class="navbar-brand" href="/">Blog</a>
-                <ul class="navbar-nav mr-auto"></ul>
+                <ul class="navbar-nav mr-auto" v-if="loggedIn()">
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'my-posts'}">My Posts</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'new-post'}">New Post</router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mr-auto" v-else></ul>
                 <ul class="navbar-nav my-2 my-lg-0" v-if="loggedIn()">
                     <li class="nav-item">
-                        {{userEmail}}
+                        <a class="nav-link text-dark">{{userEmail}}</a>
                     </li>
-                    <li class="nav-item ml-2">
-                        <a href="javascript:void(0)" v-on:click="logOut">Log Out</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)" v-on:click="logOut">Log Out</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav my-2 my-lg-0" v-else>
@@ -40,7 +48,6 @@
         },
         methods: {
             loggedIn() {
-                console.log(localStorage.getItem('loggedIn'))
                 return localStorage.getItem('loggedIn')
             },
             logOut() {
