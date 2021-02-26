@@ -1,51 +1,75 @@
 <template>
-    <div>
+    <div class="col-md-5">
         <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h3>New User</h3>
-            </div>
-            <div class="card-body">
-                <form v-on:submit.prevent="createUser">
-                    <div class="form-group">
-                        <label>Email:</label>
-                        <input type="email" class="form-control" v-model="user.email"/>
-                    </div>
-                    <div class="form-group">
-                        <label>First Name:</label>
-                        <input type="text" class="form-control" v-model="user.first_name"/>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name:</label>
-                        <input type="text" class="form-control" v-model="user.last_name"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-primary" value="Create User"/>
-                    </div>
-                </form>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Register</h3>
+                </div>
+                <div class="card-body">
+                    <form v-on:submit.prevent="createUser">
+                        <div class="form-group">
+                            <label>Full Name:</label>
+                            <input :class="{'is-invalid': errors.full_name}" class="form-control" type="text"
+                                   v-model="user.full_name"/>
+                            <div class="invalid-feedback" v-if="errors.full_name">{{errors.full_name}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input :class="{'is-invalid': errors.email}" class="form-control" type="text"
+                                   v-model="user.email"/>
+                            <div class="invalid-feedback" v-if="errors.email">{{errors.email}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input :class="{'is-invalid': errors.password}" class="form-control" type="password"
+                                   v-model="user.password"/>
+                            <div class="invalid-feedback" v-if="errors.password">{{errors.password}}</div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    </div>
 </template>
 <script>
-export default {
-    // components: {
-    //     name: 'CreateUser'
-    // },
-    data() {
-        return {
-            user: {}
-        }
-    },
-    methods: {
-        createUser(){
-            let uri = 'http://localhost:8000/api/users'
-            this.axios.post(uri, this.user).then((response)=>{
-                console.log(response.data)
-                this.$router.replace({name:'user-list'})
-            })
+    export default {
+        data() {
+            return {
+                user: {
+                    full_name: '',
+                    email: '',
+                    password: '',
+                },
+                errors: {
+                    full_name: null,
+                    email: null,
+                    password: null,
+                },
+                error: null
+            }
+        },
+        methods: {
+            createUser() {
+                this.axios.post('/users', this.user)
+                    .then(() => {
+                        this.$router.replace({name: 'login'})
+                    })
+                    .catch(err => {
+                        const detail = err.response.data.detail
+                        if (Array.isArray(detail)) {
+                            detail.map(i => {
+                                this.errors[i.loc[1]] = i.msg
+                            })
+                        } else {
+                            this.error = detail
+                        }
+
+                        this.user.password = ''
+                    })
+            }
         }
     }
-}
 </script>
