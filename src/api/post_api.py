@@ -46,8 +46,15 @@ async def get_my_posts_api(pagination=Depends(pagination), current_user=Depends(
 
 @router.post("", response_model=PostSerializer,
              status_code=status.HTTP_201_CREATED)
-async def create_post_api(post: PostInSerializer, current_user=Depends(get_current_user)):
-    post = Post(title=post.title, created_by=current_user.id, content=post.content, comments=[])
+async def create_post_api(post: PostInSerializer, current_user:User=Depends(get_current_user)):
+    post = Post(
+        title=post.title,
+        created_by=current_user.id,
+        content=post.content,
+        comments=[],
+        author_name=current_user.full_name
+    )
+
     await post.commit()
     post = post.dump()
     return post

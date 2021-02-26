@@ -24,6 +24,7 @@ class Post(Document):
     content = fields.StrField()
     comments = fields.ListField(fields.EmbeddedField(Comment))
 
+    author_name = fields.StrField(allow_none=True, default='')
     created_by = fields.ReferenceField(User)
     created_at = fields.DateTimeField(default=datetime.now)
     updated_at = fields.DateTimeField(default=datetime.now)
