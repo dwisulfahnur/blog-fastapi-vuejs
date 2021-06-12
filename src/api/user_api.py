@@ -23,6 +23,16 @@ async def get_users_api(_: User = Depends(get_current_user)):
 @router.post("", response_model=UserSerializer,
              status_code=status.HTTP_201_CREATED)
 async def create_user_api(user_in: UserInSerializer):
+    user_exists = await User.get_by_email(user_in.email)
+    if user_exists:
+        raise HTTPException(
+            422,
+            [{
+                'loc': ["body", 'email'],
+                'msg': f"Email '{user_in.email}' is already registered",
+                'type': 'value_error',
+            }]
+        )
     try:
         user = await User.register_new_user(email=user_in.email,
                                             full_name=user_in.full_name,
