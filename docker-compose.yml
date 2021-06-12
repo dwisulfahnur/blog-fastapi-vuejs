@@ -20,7 +20,6 @@ services:
       - "8000:8000"
   frontend:
     build: ./frontend
-    command: npm run serve
     volumes:
       - ./frontend:/home/app/frontend
     depends_on:
