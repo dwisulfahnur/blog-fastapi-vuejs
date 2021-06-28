@@ -1,0 +1,11 @@
+.git
+.dockerignore
+.gitignore
+.github/*
+README.md
+Dockerfile
+
+# Artifacts that will be built during image creation.
+# This should contain all files created during `yarn build`.
+dist
+node_modules
