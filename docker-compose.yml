@@ -22,6 +22,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/home/app/frontend
+      - /home/app/frontend/node_modules
     depends_on:
       - backend
     ports:
